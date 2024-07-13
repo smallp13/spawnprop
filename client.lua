@@ -2,12 +2,12 @@ local QBCore = exports['qb-core']:GetCoreObject()
 local previewProp = nil
 local placedProps = {}
 
-RegisterCommand('spawnprop', function(source, args)
+RegisterCommand('sprop', function(source, args)
     local objectName = table.concat(args, " ")
     if objectName ~= "" then
         TriggerEvent('spawnprop:client:previewProp', objectName)
     else
-        QBCore.Functions.Notify("Usage: /spawnprop <propname>", "error")
+        QBCore.Functions.Notify("Usage: /sprop <propname>", "error")
     end
 end, false)
 
@@ -80,7 +80,7 @@ AddEventHandler('spawnprop:client:previewProp', function(objectName)
     end
 end)
 
-RegisterCommand('deleteprop', function(source, args)
+RegisterCommand('dprop', function(source, args)
     TriggerEvent('spawnprop:client:deleteNearestProp')
 end, false)
 
@@ -89,14 +89,16 @@ AddEventHandler('spawnprop:client:deleteNearestProp', function()
     local playerPed = PlayerPedId()
     local pos = GetEntityCoords(playerPed)
 
-    -- Search for the nearest prop within a radius
+    -- Search for the nearest prop within a larger radius
     local object = nil
     local handle, object = FindFirstObject()
-    local success
+    local success = false
+    local deleteDistance = 5.0 -- Increased delete distance
+
     repeat
         local posObj = GetEntityCoords(object)
         local distance = #(pos - posObj)
-        if distance < 2.0 then
+        if distance < deleteDistance then
             DeleteEntity(object)
             table.insert(placedProps, object)
             success = true
