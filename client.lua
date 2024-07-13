@@ -40,6 +40,7 @@ AddEventHandler('spawnprop:client:previewProp', function(objectName)
     PlaceObjectOnGroundProperly(previewProp)
     SetEntityAsMissionEntity(previewProp, true, true)
     SetEntityVisible(previewProp, true) -- Show the preview prop
+    FreezeEntityPosition(previewProp, true) -- Ensure prop has collision
 
     -- Show controls for placing the prop
     DisplayHelpText("Press ~INPUT_CONTEXT~ to place prop, ~INPUT_FRONTEND_LEFT~ to rotate left, ~INPUT_FRONTEND_RIGHT~ to rotate right.")
@@ -113,8 +114,12 @@ function PlaceProp(objectName, coords)
         
         -- Drop the prop to the ground
         PlaceObjectOnGroundProperly(previewProp)
+        FreezeEntityPosition(previewProp, true) -- Ensure prop stays in place
         
         QBCore.Functions.Notify("Prop placed successfully: " .. tostring(objectName))
+        
+        -- Add the placed prop to the list
+        table.insert(placedProps, previewProp)
         
         -- Reset preview prop
         previewProp = nil
